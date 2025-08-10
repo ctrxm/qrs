@@ -22,8 +22,14 @@ class Settings:
 
 settings = Settings()
 app = FastAPI(title="MinerX QRIS Service")
+
 # Inisialisasi library QRIS sekali saja saat aplikasi dimulai
 qris_processor = QRISPayment(settings.QRIS_CONFIG)
+
+# Tambahan endpoint root supaya akses "/" tidak Not Found
+@app.get("/")
+async def root():
+    return {"message": "MinerX QRIS Service is running"}
 
 # --- Pydantic Models untuk Validasi Data ---
 class CreateQrisRequest(BaseModel):
@@ -91,4 +97,3 @@ async def check_payment_status(payload: CheckStatusRequest):
         return StatusResponse(status=status)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error saat memeriksa pembayaran: {e}")
-
